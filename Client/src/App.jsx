@@ -18,19 +18,20 @@ function App() {
   }, []);
 
   //添加新缺陷
-  const hundleSubmit = () =>{
-    axios.post('http://localhost:5000/api/bugs')
+  const handleSubmit = () => {
+    axios.post('http://localhost:5000/api/bugs', {
+      title: title,
+      descrp: descrp
+    })
     .then(response => {
-      setBugs([...bugs,response.data]);//将新缺陷添加到列表
-      console.log(title)
-      // setTitle('');//清空输入框
-      setDescrp('新建');//重置状态
+      setBugs([...bugs, response.data]); // 将新缺陷添加到列表
+      setTitle(''); // 清空输入框
+      setDescrp('新建'); // 重置状态
     })
     .catch(error => {
-      console.error('Error fetching bugs:', error);
+      console.error('Error adding bug:', error);
     });
-  }
-
+  };
 
   return (
     <div>
@@ -49,7 +50,7 @@ function App() {
           <option value="处理中">处理中</option>
           <option value="已解决">已解决</option>
         </select>
-        <button onClick={hundleSubmit}>提交缺陷</button>
+        <button onClick={handleSubmit}>提交缺陷</button>
       </div>
       <h2>缺陷列表</h2>
       <ul>
