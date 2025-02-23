@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import {Table,Button,Input,Select} from 'antd';
+
+const {option}= Select;
 
 function App() {
   const [bugs, setBugs] = useState([]);
@@ -32,34 +35,66 @@ function App() {
       console.error('Error adding bug:', error);
     });
   };
+  //删除缺陷
+const handleDelete = (id) => {
+  axios.delete(`http://localhost:5000/api/bugs/${id}`)
+    .then(() => {
+      setBugs(bugs.filter(bug => bug.id !== id));//更新前端列表
+    })
+    .catch(error => {
+      console.error('Error deleting bug:', error);
+    });
+};
 
+// 定义表格列
+const columns = [
+  {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+  },
+  {
+    title: '标题',
+    dataIndex: 'title',
+    key: 'title'
+  },
+  {
+    title: '状态',
+    dataIndex: 'descrp',
+    key: 'descrp'
+  },
+  {
+    title:'操作',
+    key:'action',
+    render:(text,record)=>(
+      <Button type='danger' onClick={()=>handleDelete(record.id)}>删除</Button>
+    )
+  }
+];
+  
   return (
     <div>
       <h1>缺陷提交</h1>
       {/* 提交表单 */}
-      <div>
-        <input 
-        type="text"
+      <div style={{marginBottom: '20px'}}>
+        <Input 
         value={title}
         onChange={(e)=> setTitle(e.target.value)}
         placeholder='请输入缺陷标题'
+        style={{width: '200px', marginRight: '20px'}}
          />
 
-        <select value={descrp} onChange={(e)=> setDescrp(e.target.value)}>
-          <option value="新建">新建</option>
-          <option value="处理中">处理中</option>
-          <option value="已解决">已解决</option>
-        </select>
-        <button onClick={handleSubmit}>提交缺陷</button>
+        <Select value={descrp} onChange={(value)=> setDescrp(value)}>
+          <Option value="新建">新建</Option>
+          <Option value="处理中">处理中</Option>
+          <Option value="已解决">已解决</Option>
+        </Select>
+        <Button type='primary' onClick={handleSubmit}>提交缺陷</Button>
       </div>
-      <h2>缺陷列表</h2>
-      <ul>
-        {bugs.map(bug=>(
-          <li key={bug.id}>{bug.title}{bug.descrp}</li>
-        ))}
-      </ul>
+      {/* 缺陷表格 */}
+      <Table dataSource={bugs} columns={columns} rowKey='id' />
     </div>
   );
-}
+} 
 
 export default App;

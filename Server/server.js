@@ -55,11 +55,27 @@ app.post('/api/bugs', (req, res) => {
   const bug = req.body;
   db.run('INSERT INTO bugs (title, descrp) VALUES (?, ?)', [bug.title, bug.descrp], function (err) {
     if (err) {
-      console.error('Error inserting bug ' + err.message);
-      res.status(500).send('Error inserting bug');
+      console.error('新增缺陷错误' + err.message);
+      res.status(500).send('新增缺陷错误');
     } else {
       bug.id = this.lastID;
       res.json(bug);
+    }
+  });
+});
+
+// 删除bug
+app.delete('/api/bugs/:id', function (req, res) {
+  db.run('DELETE FROM bugs WHERE id = ?', req.params.id, function (err) {
+    if (err) {
+      console.error('删除缺陷错误 ' + err.message);
+      res.status(500).send('删除缺陷错误');
+      return;
+    } 
+    if (this.changes === 0) {
+      res.status(404).send('未找到该缺陷');
+    } else {
+      res.send('删除成功');
     }
   });
 });
