@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {Table,Button,Input,Select} from 'antd';
+import Login from './Login';
 
 const {option}= Select;
 
 function App() {
   const [bugs, setBugs] = useState([]);
   const [title,setTitle] = useState('');
-  const [descrp,setDescrp] = useState('新建')
+  const [descrp,setDescrp] = useState('新建');
+  const [isLogin,setIsLogin] = useState(false);
 
   //获取缺陷列表
   useEffect(() => {
@@ -71,7 +73,10 @@ const columns = [
     )
   }
 ];
-  
+  if  (!isLogin) {
+    return <Login onLogin={setIsLogin} />;
+  }
+
   return (
     <div>
       <h1>缺陷提交</h1>

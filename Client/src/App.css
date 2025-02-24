@@ -3,6 +3,9 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  height: 100vh;/* 确保根节点占满视口高度 */
+  display: flex;/* 可选：让子元素直接利用 flex 布局 */
+  flex-direction: column;/* 可选：垂直排列子元素 */
 }
 
 .logo {
